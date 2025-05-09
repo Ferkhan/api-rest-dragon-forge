@@ -48,6 +48,32 @@ class Rutina(BaseModel):
     fecha_actualizacion: Optional[datetime] = None
     estado_registro: Optional[bool] = True # True si el documento está activo, False si está inactivo
 
+    model_config = {
+        'json_schema_extra': {
+            'example': {
+                'nombre': 'Rutina de Fuerza',
+                'nivel': 'Intermedio',
+                'descripcion': 'Rutina enfocada en aumentar la fuerza muscular.',
+                'ejercicios': [
+                    {
+                        'ejercicio_id': 'ejercicio_1',
+                        'series': 3,
+                        'repeticiones': 10,
+                        'descanso_segundos': 60
+                    },
+                    {
+                        'ejercicio_id': 'ejercicio_2',
+                        'series': 4,
+                        'repeticiones': 8,
+                        'descanso_segundos': 90
+                    }
+                ],
+                'duracion_minutos': 45
+            }   
+        }
+    }
+
+
 class Usuario(BaseModel):
     nombre: str
     email: str
