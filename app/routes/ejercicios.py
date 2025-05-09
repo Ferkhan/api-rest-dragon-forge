@@ -1,5 +1,5 @@
-import firestore_db as db
-from models import EjercicioIn, EjercicioOut, EjercicioEnRutina
+import app.firestore_db as db
+from app.models import EjercicioIn, EjercicioOut, EjercicioEnRutina
 
 def rutas_ejercicios(app):
     
