@@ -1,5 +1,5 @@
 import app.firestore_db as db
-from app.models import EjercicioIn, EjercicioOut, EjercicioEnRutina
+from app.models import Ejercicio, EjercicioEnRutina
 
 def rutas_ejercicios(app):
     
@@ -27,7 +27,7 @@ def rutas_ejercicios(app):
 
     """Crear un nuevo ejercicio"""
     @app.post("/ejercicios", tags=["Ejercicios"])
-    def crear_ejercicio(ejercicio: EjercicioIn):
+    def crear_ejercicio(ejercicio: Ejercicio):
         response = db.create(collection_name, ejercicio.model_dump())
         if response:
             return {"mensaje": "Ejercicio creado correctamente", "id": response}
@@ -35,7 +35,7 @@ def rutas_ejercicios(app):
             return {"mensaje": "Error al crear el ejercicio"}
     
     @app.put("/ejercicios/{ejercicio_id}", tags=["Ejercicios"])
-    def actualizar_ejercicio(ejercicio_id: str, ejercicio: EjercicioIn):
+    def actualizar_ejercicio(ejercicio_id: str, ejercicio: Ejercicio):
         response = db.update(collection_name, ejercicio_id, ejercicio.model_dump())
         if response:
             return {"mensaje": "Ejercicio actualizado correctamente", "id": ejercicio_id}

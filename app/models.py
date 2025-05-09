@@ -1,10 +1,9 @@
 from typing import List, Optional
 from pydantic import BaseModel, Field
 from datetime import datetime
-from firebase_admin import firestore
 
 """Modelo para crear ejercicios"""
-class EjercicioIn(BaseModel):
+class Ejercicio(BaseModel):
     nombre: str
     grupo_muscular: List[str]
     dificultad: str
@@ -29,7 +28,7 @@ class EjercicioIn(BaseModel):
     }
 
 """Modelo para leer ejercicios"""
-class EjercicioOut(EjercicioIn):
+class EjercicioOut(Ejercicio):
     id: str  # ID del documento en Firestore
 
 
