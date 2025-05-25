@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import Response, APIRouter
+from fastapi import Response, APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 import app.firestore_db as db
@@ -15,8 +15,8 @@ def obtener_ejercicios_activos():
     response = db.readAllActives(collection_name)
     if response:
         return JSONResponse(content=jsonable_encoder(response), status_code=200)
-    elif not response:
-        return Response(status_code=404)
+    else:
+        raise HTTPException(status_code=404, detail="No se encontraron ejercicios activos")
 
 """Obtener un ejercicio por ID"""
 @ejercicios_router.get("/{ejercicio_id}", response_model=EjercicioOut, status_code=200, response_description="Ejercicio encontrado")
@@ -25,7 +25,7 @@ def obtener_ejercicio_por_id(ejercicio_id: str):
     if response:
         return JSONResponse(content=jsonable_encoder(response), status_code=200)
     else:
-        return Response(status_code=404)
+        raise HTTPException(status_code=404, detail="Ejercicio no encontrado")
 
 """Crear un nuevo ejercicio"""
 @ejercicios_router.post("/", status_code=201, response_description="Ejercicio creado")
@@ -34,7 +34,7 @@ def crear_ejercicio(ejercicio: EjercicioIn):
     if response:
         return JSONResponse(content={"mensaje": "Ejercicio creado correctamente", "id": response}, status_code=201)
     else:
-        return JSONResponse(content={"mensaje": "Error al crear el ejercicio"}, status_code=400)
+        raise HTTPException(status_code=400, detail="Error al crear el ejercicio")
 
 """Actualizar un ejercicio existente"""
 @ejercicios_router.put("/{ejercicio_id}", status_code=204, response_description="Ejercicio actualizado")
@@ -43,7 +43,7 @@ def actualizar_ejercicio(ejercicio_id: str, ejercicio: EjercicioIn):
     if response:
         return Response(status_code=204)
     else:
-        return Response(status_code=404)
+        raise HTTPException(status_code=404, detail="Ejercicio no encontrado")
 
 """Eliminar un ejercicio (marcar como inactiva)"""
 @ejercicios_router.put("/{ejercicio_id}/eliminar", status_code=204, response_description="Ejercicio marcado como eliminado")
@@ -52,7 +52,7 @@ def eliminar_ejercicio(ejercicio_id: str):
     if response:
         return Response(status_code=204)
     else:
-        return Response(status_code=404)
+        raise HTTPException(status_code=404, detail="Ejercicio no encontrado")
     
 """Recuperar un ejercicio (marcar como activa)"""
 @ejercicios_router.put("/{ejercicio_id}/recuperar", status_code=204, response_description="Ejercicio recuperado")
@@ -61,7 +61,7 @@ def recuperar_ejercicio(ejercicio_id: str):
     if response:
         return Response(status_code=204)
     else:
-        return Response(status_code=404)
+        raise HTTPException(status_code=404, detail="Ejercicio no encontrado")
     
 """Eliminar un ejercicio (borrado físico)"""
 @ejercicios_router.delete("/{ejercicio_id}", status_code=204, response_description="Ejercicio borrado permanentemente")
@@ -70,4 +70,4 @@ def borrar_ejercicio(ejercicio_id: str):
     if response:
         return Response(status_code=204)
     else:
-        return Response(status_code=404)
+        raise HTTPException(status_code=404, detail="Ejercicio no encontrado")
