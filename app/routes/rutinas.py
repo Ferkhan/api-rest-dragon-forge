@@ -7,7 +7,7 @@ def rutas_rutinas(app):
     """Obtener todas las rutinas"""
     @app.get("/rutinas", tags=["Rutinas"])
     def obtener_rutinas():
-        response = db.readAll(collection_name)
+        response = db.readAllActives(collection_name)
         return response
     
     """Obtener una rutina por ID"""

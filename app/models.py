@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 
 """Modelo para crear ejercicios"""
-class Ejercicio(BaseModel):
+class EjercicioIn(BaseModel):
     nombre: str
     grupo_muscular: List[str]
     dificultad: str
@@ -28,7 +28,7 @@ class Ejercicio(BaseModel):
     }
 
 """Modelo para leer ejercicios"""
-class EjercicioOut(Ejercicio):
+class EjercicioOut(EjercicioIn):
     id: str  # ID del documento en Firestore
 
 
