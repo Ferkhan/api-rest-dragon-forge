@@ -1,9 +1,9 @@
 from typing import List
-from fastapi import Query, Path, Response, APIRouter
+from fastapi import Response, APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 import app.firestore_db as db
-from app.models import EjercicioIn, EjercicioOut, EjercicioEnRutina
+from app.models import EjercicioIn, EjercicioOut
 
 ejercicios_router = APIRouter()
 
@@ -19,8 +19,8 @@ def obtener_ejercicios_activos():
         return Response(status_code=404)
 
 """Obtener un ejercicio por ID"""
-@ejercicios_router.get("/{ejercicio_id}", response_model=EjercicioOut)
-def obtener_ejercicio_por_id(ejercicio_id: str = Path(min_length=5)):
+@ejercicios_router.get("/{ejercicio_id}", response_model=EjercicioOut, status_code=200, response_description="Ejercicio encontrado")
+def obtener_ejercicio_por_id(ejercicio_id: str):
     response = db.readByID(collection_name, ejercicio_id)
     if response:
         return JSONResponse(content=jsonable_encoder(response), status_code=200)

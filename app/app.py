@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 # from routes import rutas_ejercicios, rutas_rutinas, rutas_usuarios
 from app.routes import ejercicios_router
-from app.routes import rutas_rutinas    
+from app.routes import rutinas_router
 from app.routes import rutas_usuarios
 
 def create_app() -> FastAPI:
@@ -16,8 +16,8 @@ def create_app() -> FastAPI:
     def inicio():
         return {"message": "Bienvenido a la API de Dragon Forge"}
     
-    app.include_router(router=ejercicios_router, prefix="/ejercicios", tags=["Ejercicios"])
-    rutas_rutinas(app)
+    app.include_router(router=ejercicios_router,    prefix="/ejercicios",   tags=["Ejercicios"])
+    app.include_router(router=rutinas_router,       prefix="/rutinas",      tags=["Rutinas"])
     rutas_usuarios(app)
 
     return app

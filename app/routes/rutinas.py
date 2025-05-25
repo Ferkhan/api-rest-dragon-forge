@@ -1,65 +1,73 @@
+from typing import List
+from fastapi import HTTPException, Response, APIRouter
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 import app.firestore_db as db
-from app.models import Rutina
+from app.models import RutinaIn, RutinaOut
 
-def rutas_rutinas(app):
-    collection_name = "rutinas"
+rutinas_router = APIRouter()
 
-    """Obtener todas las rutinas"""
-    @app.get("/rutinas", tags=["Rutinas"])
-    def obtener_rutinas():
-        response = db.readAllActives(collection_name)
-        return response
+collection_name = "rutinas"
+
+"""Obtener todos las rutinas"""
+@rutinas_router.get("/", response_model=List[RutinaOut], status_code=200, response_description="Lista de rutinas")
+def obtener_rutinas_activas():
+    response = db.readAllActives(collection_name)
+    if response: 
+        return JSONResponse(content=jsonable_encoder(response), status_code=200)
+    else:
+        raise HTTPException(status_code=404, detail="No se encontraron rutinas activas")
     
-    """Obtener una rutina por ID"""
-    @app.get("/rutinas/{rutina_id}", tags=["Rutinas"])
-    def obtener_rutina_por_id(rutina_id: str):
-        response = db.readByID(collection_name, rutina_id)
-        if response:
-            return response
-        else:
-            return {"mensaje": "Rutina no encontrada"}
-        
-    """Crear una nueva rutina"""
-    @app.post("/rutinas", tags=["Rutinas"])
-    def crear_rutina(rutina: Rutina):
-        response = db.create(collection_name, rutina.model_dump())
-        if response:
-            return {"mensaje": "Rutina creada correctamente", "id": response}
-        else:
-            return {"mensaje": "Error al crear la rutina"}
-        
-    """Actualizar una rutina existente"""
-    @app.put("/rutinas/{rutina_id}", tags=["Rutinas"])
-    def actualizar_rutina(rutina_id: str, rutina: Rutina):
-        response = db.update(collection_name, rutina_id, rutina.model_dump())
-        if response:
-            return {"mensaje": "Rutina actualizada correctamente", "id": rutina_id}
-        else:
-            return {"mensaje": "Error al actualizar la rutina"}
-        
-    """Eliminar una rutina (marcar como inactiva)"""
-    @app.put("/rutinas/{rutina_id}/eliminar", tags=["Rutinas"])
-    def eliminar_rutina(rutina_id: str):
-        response = db.update(collection_name, rutina_id, {"estado_registro": False})
-        if response:
-            return {"mensaje": "Rutina eliminada correctamente", "id": rutina_id}
-        else:
-            return {"mensaje": "Error al eliminar la rutina"}
-        
-    """Recuperar una rutina (marcar como activa)"""
-    @app.put("/rutinas/{rutina_id}/recuperar", tags=["Rutinas"])
-    def recuperar_rutina(rutina_id: str):
-        response = db.update(collection_name, rutina_id, {"estado_registro": True})
-        if response:
-            return {"mensaje": "Rutina recuperada correctamente", "id": rutina_id}
-        else:
-            return {"mensaje": "Error al recuperar la rutina"}
-        
-    """Eliminar una rutina (borrado físico)"""
-    @app.delete("/rutinas/{rutina_id}", tags=["Rutinas"])
-    def eliminar_rutina(rutina_id: str):
-        response = db.delete(collection_name, rutina_id)
-        if response:
-            return {"mensaje": "Rutina eliminada correctamente", "id": rutina_id}
-        else:
-            return {"mensaje": "Error al eliminar la rutina"}
+"""Obtener una rutina por ID"""
+@rutinas_router.get("/{rutina_id}", response_model=RutinaOut, status_code=200, response_description="Rutina encontrada")
+def obtener_rutina_por_id(rutina_id: str):
+    response = db.readByID(collection_name, rutina_id)
+    if response:
+        return JSONResponse(content=jsonable_encoder(response), status_code=200)
+    else:
+        raise HTTPException(status_code=404, detail="Rutina no encontrada")
+
+"""Crear una nueva rutina"""
+@rutinas_router.post("/", status_code=201, response_description="Rutina creada")
+def crear_rutina(rutina: RutinaIn):
+    response = db.create(collection_name, rutina.model_dump())
+    if response:
+        return JSONResponse(content={"mensaje": "Rutina creada correctamente", "id": response}, status_code=201)
+    else:
+        raise HTTPException(status_code=400, detail="Error al crear la rutina")
+    
+"""Actualizar una rutina existente"""
+@rutinas_router.put("/{rutina_id}", status_code=204, response_description="Rutina actualizada")
+def actualizar_rutina(rutina_id: str, rutina: RutinaIn):
+    response = db.update(collection_name, rutina_id, rutina.model_dump())
+    if response:
+        return Response(status_code=204)
+    else:
+        raise HTTPException(status_code=404, detail="Rutina no encontrada")
+    
+"""Eliminar una rutina (marcar como inactiva)"""
+@rutinas_router.put("/{rutina_id}/eliminar", status_code=204, response_description="Rutina marcada como eliminada")
+def eliminar_rutina(rutina_id: str):
+    response = db.update(collection_name, rutina_id, {"estado_registro": False})
+    if response:
+        return Response(status_code=204)
+    else:
+        raise HTTPException(status_code=404, detail="Rutina no encontrada")
+    
+"""Recuperar una rutina (marcar como activa)"""
+@rutinas_router.put("/{rutina_id}/recuperar", status_code=204, response_description="Rutina recuperada")
+def recuperar_rutina(rutina_id: str):
+    response = db.update(collection_name, rutina_id, {"estado_registro": True})
+    if response:
+        return Response(status_code=204)
+    else:
+        raise HTTPException(status_code=404, detail="Rutina no encontrada")
+
+"""Eliminar una rutina (borrado físico)"""
+@rutinas_router.delete("/{rutina_id}", status_code=204, response_description="Rutina eliminada")
+def eliminar_rutina(rutina_id: str):
+    response = db.delete(collection_name, rutina_id)
+    if response:
+        return Response(status_code=204)
+    else:
+        raise HTTPException(status_code=404, detail="Rutina no encontrada")

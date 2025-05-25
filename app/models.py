@@ -38,7 +38,8 @@ class EjercicioEnRutina(BaseModel):
     repeticiones: int
     descanso_segundos: int
 
-class Rutina(BaseModel):
+"""Modelo para crear rutinas"""
+class RutinaIn(BaseModel):
     nombre: str
     nivel: str
     descripcion: Optional[str] = None
@@ -73,6 +74,9 @@ class Rutina(BaseModel):
         }
     }
 
+"""Modelo para leer rutinas"""
+class RutinaOut(RutinaIn):
+    id: str  # ID del documento en Firestore
 
 class Usuario(BaseModel):
     nombre: str
