@@ -1,7 +1,6 @@
 from typing import List, Optional
 from pydantic import BaseModel, Field
 from datetime import datetime
-from firebase_admin import firestore
 
 """Modelo para crear ejercicios"""
 class EjercicioIn(BaseModel):
@@ -39,7 +38,8 @@ class EjercicioEnRutina(BaseModel):
     repeticiones: int
     descanso_segundos: int
 
-class Rutina(BaseModel):
+"""Modelo para crear rutinas"""
+class RutinaIn(BaseModel):
     nombre: str
     nivel: str
     descripcion: Optional[str] = None
@@ -48,6 +48,35 @@ class Rutina(BaseModel):
     fecha_creacion: Optional[datetime] = None
     fecha_actualizacion: Optional[datetime] = None
     estado_registro: Optional[bool] = True # True si el documento está activo, False si está inactivo
+
+    model_config = {
+        'json_schema_extra': {
+            'example': {
+                'nombre': 'Rutina de Fuerza',
+                'nivel': 'Intermedio',
+                'descripcion': 'Rutina enfocada en aumentar la fuerza muscular.',
+                'ejercicios': [
+                    {
+                        'ejercicio_id': 'ejercicio_1',
+                        'series': 3,
+                        'repeticiones': 10,
+                        'descanso_segundos': 60
+                    },
+                    {
+                        'ejercicio_id': 'ejercicio_2',
+                        'series': 4,
+                        'repeticiones': 8,
+                        'descanso_segundos': 90
+                    }
+                ],
+                'duracion_minutos': 45
+            }   
+        }
+    }
+
+"""Modelo para leer rutinas"""
+class RutinaOut(RutinaIn):
+    id: str  # ID del documento en Firestore
 
 class Usuario(BaseModel):
     nombre: str

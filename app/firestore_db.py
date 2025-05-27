@@ -3,7 +3,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from google.cloud.firestore_v1.base_query import FieldFilter, Or
 
-cred = credentials.Certificate("./dragon-forge-cred.json")
+cred = credentials.Certificate("./cred/dragon-forge-cred.json")
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
@@ -34,12 +34,16 @@ def readByID(collection_name, document_id):
     doc_ref = db.collection(collection_name).document(document_id)
     doc = doc_ref.get()
     if doc.exists:
-        return doc_to_dict(doc)
+        data = doc_to_dict(doc)        
+        if data and data.get('estado_registro') is True:
+            return data
+        else:
+            return None
     else:
         return None
 
 """Leer todos los documentos de la colección especificada"""
-def readAll(collection_name):
+def readAllActives(collection_name):
     try:
         doc_ref = db.collection(collection_name)
         query = doc_ref.where(filter=FieldFilter('estado_registro', '==', True))
@@ -47,7 +51,7 @@ def readAll(collection_name):
         return [doc_to_dict(doc) for doc in docs]
     except Exception as e:
         print(f"Error reading documents: {e}")
-        return []
+        return None
         
 """Actualizar un documento en la colección especificada"""
 def update(collection_name, document_id, data):
