@@ -61,11 +61,11 @@ def get_user_data(uid):
 
 # print(create_user("fer@gmail.com", "12345678"))
 # user = auth.get_user("fhmELcEXhgQME9T9FOPeohEv2gr1")
-user2 = auth.get_user_by_email("fer@gmail.com")
+# user2 = auth.get_user_by_email("fer@gmail.com")
 # print(user.EmailIdentifier)
-print(user2.email)
+# print(user2.email)
 
 # for user in auth.list_users().iterate_all():
 #     print('User: ' + user.uid)
 
-print(get_user_data("fhmELcEXhgQME9T9FOPeohEv2gr1"))
+# print(get_user_data("fhmELcEXhgQME9T9FOPeohEv2gr1"))
