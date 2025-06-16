@@ -93,7 +93,7 @@ class UsuarioIn(BaseModel):
     fecha_actualizacion: Optional[datetime] = None
     cuenta_verificada: Optional[bool] = False  # True si el usuario ha verificado su cuenta, False si no
     foto_perfil_url: Optional[str] = None  # URL de la foto de perfil del usuario
-    info_fenotipica_completa = Optional[bool] = False  # True si el usuario ha completado su información fenotípica, False si no
+    info_fenotipica_completa: Optional[bool] = False  # True si el usuario ha completado su información fenotípica, False si no
     estado_registro: Optional[bool] = True # True si el documento está activo, False si está inactivo
 
     rutinas: Optional[List[str]] = []  # IDs de rutinas asociadas o creadas por el usuario
