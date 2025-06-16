@@ -3,6 +3,9 @@ from fastapi import FastAPI
 from app.routes import ejercicios_router
 from app.routes import rutinas_router
 from app.routes import rutas_usuarios
+from fastapi.middleware.cors import CORSMiddleware # Permitir el acceso desde otros dominios
+
+# origins = ["http://localhost:8080"]
 
 def create_app() -> FastAPI:
     
@@ -10,6 +13,15 @@ def create_app() -> FastAPI:
         title="Dragon Forge API",
         description="API RESTful para gestionar ejercicios y rutinas de gimnasio",
         version="1.0.0",
+    )
+
+    # Activar el middleware CORS
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],            # <-- or ["*"] si quieres permitir todos
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     @app.get("/", tags=["Inicio"])
