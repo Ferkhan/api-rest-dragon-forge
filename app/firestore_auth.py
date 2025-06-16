@@ -2,23 +2,18 @@ import firebase_admin
 from firebase_admin import credentials, auth
 
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate("./cred/dragon-forge-cred.json")
-firebase_admin.initialize_app(cred)
-
-auth1 = firebase_admin.auth
+if not firebase_admin._apps:
+    cred = credentials.Certificate("./cred/dragon-forge-cred.json")
+    firebase_admin.initialize_app(cred)
 
 def create_user(email, password, display_name):
     """Create a new user with the given email, password y display_name."""
-    try:
-        user = auth.create_user(
-            email=email,
-            password=password,
-            display_name=display_name
-        )
-        return user.uid
-    except Exception as e:
-        print(f"Error al crear usuario: {e}")
-        return None
+    user = auth.create_user(
+        email=email,
+        password=password,
+        display_name=display_name
+    )
+    return user.uid
 
 def delete_user(uid):
     """Delete a user with the given UID."""
@@ -66,11 +61,11 @@ def get_user_data(uid):
 
 # print(create_user("fer@gmail.com", "12345678"))
 # user = auth.get_user("fhmELcEXhgQME9T9FOPeohEv2gr1")
-# user2 = auth.get_user_by_email("fer@gmail.com")
+user2 = auth.get_user_by_email("fer@gmail.com")
 # print(user.EmailIdentifier)
-# print(user2)
+print(user2.email)
 
 # for user in auth.list_users().iterate_all():
 #     print('User: ' + user.uid)
 
-# print(get_user_data("fhmELcEXhgQME9T9FOPeohEv2gr1"))
+print(get_user_data("fhmELcEXhgQME9T9FOPeohEv2gr1"))

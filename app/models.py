@@ -82,13 +82,11 @@ class RutinaOut(RutinaIn):
 class UsuarioIn(BaseModel):
     nombre: str
     email: str
-    contrasena: str
     telefono: Optional[str] = None
-    fecha_registro: datetime
-    fecha_nacimiento: datetime
-    peso: float # Peso en kilogramos
-    altura: float # Altura en centímetros
-    sexo: str  # 'masculino' o 'femenino'
+    fecha_nacimiento: Optional[datetime] = None
+    peso: Optional[float] = None # Peso en kilogramos
+    altura: Optional[float] = None # Altura en centímetros
+    sexo: Optional[str] = None  # 'masculino' o 'femenino'
     fecha_creacion: Optional[datetime] = None
     fecha_actualizacion: Optional[datetime] = None
     cuenta_verificada: Optional[bool] = False  # True si el usuario ha verificado su cuenta, False si no
@@ -105,9 +103,7 @@ class UsuarioIn(BaseModel):
             'example': {
                 'nombre': 'Juan Perez',
                 'email': 'juan.perez@example.com',
-                'contrasena': 'password123',
                 'telefono': '0987654321',
-                'fecha_registro': '2023-01-01T00:00:00Z',
                 'fecha_nacimiento': '2000-01-01',
                 'peso': 70.5,
                 'altura': 175.0,
@@ -125,7 +121,37 @@ class UsuarioIn(BaseModel):
 class UsuarioOut(UsuarioIn):
     id: str  # ID del documento en Firestore
 
-    
+"""Modelo para el inicio de sesión de usuarios"""
+class UsuarioLogin(BaseModel):
+    email: str
+    contrasenia: str
+
+    model_config = {
+        'json_schema_extra': {
+            'example': {
+                'email': 'juan.perez@example.com',
+                'contrasenia': 'Password123'
+            }
+        }
+    }
+
+"""Modelo para el registro de usuarios"""
+class UsuarioRegistro(UsuarioIn):
+    contrasenia: str  # Contraseña del usuario
+
+    model_config = {
+        'json_schema_extra': {
+            'example': {
+                'nombre': 'Juan Perez',
+                'email': 'juan.perez@example.com',
+                'contrasenia': 'Password123',
+                'telefono': '0987654321',
+                'info_fenotipica_completa': False,
+                'estado_registro': True,
+            }
+        }
+    }
+
 
 # MODELOS CON VALIDACIONES PARA CREAR UN NUEVO ELEMENTO
 # class EjercicioCrear(BaseModel):

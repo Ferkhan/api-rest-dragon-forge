@@ -3,8 +3,9 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from google.cloud.firestore_v1.base_query import FieldFilter, Or
 
-cred = credentials.Certificate("./cred/dragon-forge-cred.json")
-firebase_admin.initialize_app(cred)
+if not firebase_admin._apps:
+    cred = credentials.Certificate("./cred/dragon-forge-cred.json")
+    firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
@@ -17,12 +18,15 @@ def doc_to_dict(doc):
     return None
 
 """Crear un nuevo documento en la colección especificada"""
-def create(collection_name, data):
+def create(collection_name, data, id = None):
     try:
         data['fecha_creacion'] = datetime.now()
         data['fecha_actualizacion'] = datetime.now()
-        
-        doc_ref = db.collection(collection_name).document()
+
+        if id:
+            doc_ref = db.collection(collection_name).document(id)
+        else:
+            doc_ref = db.collection(collection_name).document()
         doc_ref.set(data)
         return doc_ref.id
     except Exception as e:
