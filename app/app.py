@@ -11,7 +11,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="Dragon Forge API",
         description="API RESTful para gestionar ejercicios y rutinas de gimnasio",
-        version="1.0.0",
+        version="0.3.0",
     )
 
     # Activar el middleware CORS
