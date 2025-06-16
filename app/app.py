@@ -1,8 +1,6 @@
 from fastapi import FastAPI
-# from routes import rutas_ejercicios, rutas_rutinas, rutas_usuarios
 from app.routes import ejercicios_router
 from app.routes import rutinas_router
-from app.routes import rutas_usuarios
 from app.routes import usuarios_router
 from fastapi.middleware.cors import CORSMiddleware # Permitir el acceso desde otros dominios
 
