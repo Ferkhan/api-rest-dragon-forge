@@ -1,8 +1,7 @@
 from fastapi import FastAPI
-# from routes import rutas_ejercicios, rutas_rutinas, rutas_usuarios
 from app.routes import ejercicios_router
 from app.routes import rutinas_router
-from app.routes import rutas_usuarios
+from app.routes import usuarios_router
 from fastapi.middleware.cors import CORSMiddleware # Permitir el acceso desde otros dominios
 
 # origins = ["http://localhost:8080"]
@@ -30,6 +29,6 @@ def create_app() -> FastAPI:
     
     app.include_router(router=ejercicios_router,    prefix="/ejercicios",   tags=["Ejercicios"])
     app.include_router(router=rutinas_router,       prefix="/rutinas",      tags=["Rutinas"])
-    rutas_usuarios(app)
+    app.include_router(router=usuarios_router,      prefix="/usuarios",     tags=["Usuarios"])
 
     return app
