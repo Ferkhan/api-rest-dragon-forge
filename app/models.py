@@ -78,24 +78,54 @@ class RutinaIn(BaseModel):
 class RutinaOut(RutinaIn):
     id: str  # ID del documento en Firestore
 
-class Usuario(BaseModel):
+"""Modelo para crear usuarios"""
+class UsuarioIn(BaseModel):
     nombre: str
     email: str
     contrasena: str
     telefono: Optional[str] = None
     fecha_registro: datetime
     fecha_nacimiento: datetime
-    peso: float
-    altura: float
+    peso: float # Peso en kilogramos
+    altura: float # Altura en centímetros
     sexo: str  # 'masculino' o 'femenino'
     fecha_creacion: Optional[datetime] = None
     fecha_actualizacion: Optional[datetime] = None
+    cuenta_verificada: Optional[bool] = False  # True si el usuario ha verificado su cuenta, False si no
+    foto_perfil_url: Optional[str] = None  # URL de la foto de perfil del usuario
+    info_fenotipica_completa = Optional[bool] = False  # True si el usuario ha completado su información fenotípica, False si no
     estado_registro: Optional[bool] = True # True si el documento está activo, False si está inactivo
 
-    rutinas: Optional[List[str]] = []  # IDs de rutinas asociadas al usuario
+    rutinas: Optional[List[str]] = []  # IDs de rutinas asociadas o creadas por el usuario
     ejercicios_favoritos: Optional[List[str]] = []  # IDs de ejercicios favoritos
     rutinas_favoritas: Optional[List[str]] = []  # IDs de rutinas favoritas
 
+    model_config = {
+        'json_schema_extra': {
+            'example': {
+                'nombre': 'Juan Perez',
+                'email': 'juan.perez@example.com',
+                'contrasena': 'password123',
+                'telefono': '0987654321',
+                'fecha_registro': '2023-01-01T00:00:00Z',
+                'fecha_nacimiento': '2000-01-01',
+                'peso': 70.5,
+                'altura': 175.0,
+                'sexo': 'masculino',
+                'info_fenotipica_completa': False,
+                'estado_registro': True,
+                'rutinas': ['rutina_1', 'rutina_2'],
+                'ejercicios_favoritos': ['ejercicio_1', 'ejercicio_2'],
+                'rutinas_favoritas': ['rutina_fav_1']
+            }
+        }
+    }
+
+"""Modelo para leer usuarios"""
+class UsuarioOut(UsuarioIn):
+    id: str  # ID del documento en Firestore
+
+    
 
 # MODELOS CON VALIDACIONES PARA CREAR UN NUEVO ELEMENTO
 # class EjercicioCrear(BaseModel):
