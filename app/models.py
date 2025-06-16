@@ -8,10 +8,10 @@ class EjercicioIn(BaseModel):
     grupo_muscular: List[str]
     dificultad: str
     instrucciones: str
-    equipamiento: Optional[List[str]] = Field(default=['hola bola'])
+    equipamiento: Optional[List[str]] = Field(default_factory=list)
     fecha_creacion: Optional[datetime] = None
     fecha_actualizacion: Optional[datetime] = None
-    imagen_url: Optional[str] = None
+    imagen_url: Optional[str] = "https://firebasestorage.googleapis.com/v0/b/dragon-forge-6b879.firebasestorage.app/o/default%2Fejercicios%2Fdefault.webp?alt=media&token=aa7be216-e02e-49fb-b24f-3e00f968202b"
     estado_registro: Optional[bool] = True # True si el documento está activo, False si está inactivo
     # errores_comunes: Optional[List[str]] = []
 
@@ -21,7 +21,7 @@ class EjercicioIn(BaseModel):
                 'nombre': 'Flexiones de brazos',
                 'grupo_muscular': ['Pecho', 'Tríceps'],
                 'dificultad': 'Intermedio',
-                'instrucciones': 'Coloca tus manos en el suelo a la altura de los hombros...',
+                'instrucciones': 'Coloca tus manos en el suelo a la altura de los hombros',
                 'equipamiento': ['Colchoneta']
             }
         }
