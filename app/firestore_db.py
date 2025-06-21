@@ -1,13 +1,12 @@
 from datetime import datetime
-import firebase_admin
-from firebase_admin import credentials, firestore
-from google.cloud.firestore_v1.base_query import FieldFilter, Or
+from google.cloud.firestore_v1.base_query import FieldFilter
+from app.init_firebase import init_firebase
 
-if not firebase_admin._apps:
-    cred = credentials.Certificate("./cred/dragon-forge-cred.json")
-    firebase_admin.initialize_app(cred)
-
-db = firestore.client()
+try:
+    db = init_firebase()
+    print("Firebase inicializado correctamente")
+except Exception as e:
+    print(f"Error al inicializar Firebase: {e}")
 
 """Convierte un documento de Firestore a un diccionario con su ID."""
 def doc_to_dict(doc):

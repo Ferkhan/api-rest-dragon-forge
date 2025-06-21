@@ -1,10 +1,11 @@
-import firebase_admin
-from firebase_admin import credentials, auth
+from firebase_admin import auth
+from app.init_firebase import init_firebase
 
-# Initialize Firebase Admin SDK
-if not firebase_admin._apps:
-    cred = credentials.Certificate("./cred/dragon-forge-cred.json")
-    firebase_admin.initialize_app(cred)
+try:
+    init_firebase()
+    print("Firebase inicializado correctamente")
+except Exception as e:
+    print(f"Error al inicializar Firebase: {e}")
 
 def create_user(email, password, display_name):
     """Create a new user with the given email, password y display_name."""
