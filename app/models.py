@@ -11,6 +11,7 @@ class EjercicioIn(BaseModel):
     equipamiento: Optional[List[str]] = Field(default_factory=list)
     fecha_creacion: Optional[datetime] = None
     fecha_actualizacion: Optional[datetime] = None
+    destacado: Optional[bool] = False  # True si el ejercicio es destacado, False si no
     imagen_url: Optional[str] = "https://firebasestorage.googleapis.com/v0/b/dragon-forge-6b879.firebasestorage.app/o/default%2Fejercicios%2Fdefault.webp?alt=media&token=aa7be216-e02e-49fb-b24f-3e00f968202b"
     estado_registro: Optional[bool] = True # True si el documento está activo, False si está inactivo
     # errores_comunes: Optional[List[str]] = []
@@ -47,6 +48,7 @@ class EjercicioPatch(BaseModel):
     equipamiento: Optional[List[str]] = None
     imagen_url: Optional[str] = None
     estado_registro: Optional[bool] = None  # True si el documento está activo, False si está inactivo
+    destacado: Optional[bool] = None  # True si el ejercicio es destacado, False si no
 
     model_config = {
         'json_schema_extra': {
@@ -57,6 +59,7 @@ class EjercicioPatch(BaseModel):
                 'instrucciones': 'Coloca tus rodillas en el suelo y realiza las flexiones',
                 'equipamiento': ['Colchoneta'],
                 'imagen_url': 'https://example.com/nueva_imagen.webp',
+                'destacado': False,
                 'estado_registro': True
             }
         }
@@ -71,6 +74,8 @@ class RutinaIn(BaseModel):
     duracion_minutos: Optional[int] = None
     fecha_creacion: Optional[datetime] = None
     fecha_actualizacion: Optional[datetime] = None
+    imagen_url: Optional[str] = "https://firebasestorage.googleapis.com/v0/b/dragon-forge-6b879.firebasestorage.app/o/default%2Fejercicios%2Fdefault.webp?alt=media&token=aa7be216-e02e-49fb-b24f-3e00f968202b"  # URL de la imagen de la rutina
+    destacado: Optional[bool] = False  # True si la rutina es destacada, False si no
     estado_registro: Optional[bool] = True # True si el documento está activo, False si está inactivo
 
     model_config = {
