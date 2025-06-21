@@ -38,6 +38,30 @@ class EjercicioEnRutina(BaseModel):
     repeticiones: int
     descanso_segundos: int
 
+"""Modelo para actualizar ejercicios"""
+class EjercicioPatch(BaseModel):
+    nombre: Optional[str] = None
+    grupo_muscular: Optional[List[str]] = None
+    dificultad: Optional[str] = None
+    instrucciones: Optional[str] = None
+    equipamiento: Optional[List[str]] = None
+    imagen_url: Optional[str] = None
+    estado_registro: Optional[bool] = None  # True si el documento está activo, False si está inactivo
+
+    model_config = {
+        'json_schema_extra': {
+            'example': {
+                'nombre': 'Flexiones de brazos modificadas',
+                'grupo_muscular': ['Pecho', 'Hombros'],
+                'dificultad': 'Fácil',
+                'instrucciones': 'Coloca tus rodillas en el suelo y realiza las flexiones',
+                'equipamiento': ['Colchoneta'],
+                'imagen_url': 'https://example.com/nueva_imagen.webp',
+                'estado_registro': True
+            }
+        }
+    }
+
 """Modelo para crear rutinas"""
 class RutinaIn(BaseModel):
     nombre: str
