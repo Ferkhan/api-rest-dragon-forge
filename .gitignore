@@ -1,2 +1,4 @@
 **/__pycache__/
 *.py[cod]
+.env
+app/cred/dragon-forge-cred.json
