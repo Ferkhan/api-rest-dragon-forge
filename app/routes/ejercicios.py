@@ -4,7 +4,7 @@ from google.cloud.firestore_v1.base_query import FieldFilter
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 import app.firestore_db as db
-from app.models import EjercicioIn, EjercicioOut
+from app.models import EjercicioIn, EjercicioOut, EjercicioPatch
 
 ejercicios_router = APIRouter()
 
@@ -61,6 +61,15 @@ def crear_ejercicio(ejercicio: EjercicioIn):
 @ejercicios_router.put("/{ejercicio_id}", status_code=204, response_description="Ejercicio actualizado")
 def actualizar_ejercicio(ejercicio_id: str, ejercicio: EjercicioIn):
     response = db.update(collection_name, ejercicio_id, ejercicio.model_dump())
+    if response:
+        return Response(status_code=204)
+    else:
+        raise HTTPException(status_code=404, detail="Ejercicio no encontrado")
+
+"""Actualizar parcialmente un ejercicio existente"""
+@ejercicios_router.patch("/{ejercicio_id}", status_code=204, response_description="Ejercicio actualizado parcialmente")
+def patch_ejercicio(ejercicio_id: str, datos: EjercicioPatch):
+    response = db.update(collection_name, ejercicio_id, datos.model_dump(exclude_unset=True))
     if response:
         return Response(status_code=204)
     else:
