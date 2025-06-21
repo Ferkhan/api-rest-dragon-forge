@@ -1,13 +1,13 @@
 from datetime import datetime
-import firebase_admin
-from firebase_admin import credentials, firestore
-from google.cloud.firestore_v1.base_query import FieldFilter, Or
+from typing import List
+from google.cloud.firestore_v1.base_query import FieldFilter
+from app.init_firebase import init_firebase
 
-if not firebase_admin._apps:
-    cred = credentials.Certificate("./cred/dragon-forge-cred.json")
-    firebase_admin.initialize_app(cred)
-
-db = firestore.client()
+try:
+    db = init_firebase()
+    print("Firebase inicializado correctamente")
+except Exception as e:
+    print(f"Error al inicializar Firebase: {e}")
 
 """Convierte un documento de Firestore a un diccionario con su ID."""
 def doc_to_dict(doc):
@@ -79,6 +79,14 @@ def delete(collection_name, document_id):
         print(f"Error al eliminar el documento: {e}")
         return None
 
+"""Leer documentos de la colección especificada con filtros"""
+def read_by_filters(collection_name: str, filters: List[FieldFilter]):
+    doc_ref = db.collection(collection_name)
+    query = doc_ref
+    for f in filters:
+        query = query.where(filter=f)
+    docs = query.stream()
+    return [doc_to_dict(doc) for doc in docs]
 
 # def readByFilters():
 #     try:

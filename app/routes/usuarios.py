@@ -8,7 +8,7 @@ import httpx
 
 import app.firestore_db as db
 import app.firestore_auth as fs_auth
-from app.models import UsuarioIn, UsuarioLogin, UsuarioOut, UsuarioPatchDatosFenotipicos, UsuarioRegistro
+from app.models import UsuarioIn, UsuarioLogin, UsuarioOut, UsuarioPatch, UsuarioPatchDatosFenotipicos, UsuarioRegistro
 
 usuarios_router = APIRouter()
 
@@ -78,7 +78,16 @@ def actualizar_usuario(usuario_id: str, usuario: UsuarioIn):
         return Response(status_code=204)
     else:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
-    
+
+"""Actualizar parcialmente un usuario existente"""
+@usuarios_router.patch("/{usuario_id}", status_code=204, response_description="Usuario actualizado parcialmente")
+def actualizar_ejercicio_parcialmente(usuario_id: str, datos: UsuarioPatch):
+    response = db.update(collection_name, usuario_id, datos.model_dump(exclude_unset=True))
+    if response:
+        return Response(status_code=204)
+    else:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+      
 """Actualizar los datos fenotípicos de un usuario"""
 @usuarios_router.patch("/{usuario_id}/fenotipo", status_code=204, response_description="Datos fenotípicos actualizados")
 def actualizar_datos_fenotipicos(usuario_id: str, datos: UsuarioPatchDatosFenotipicos):
@@ -116,8 +125,13 @@ def recuperar_usuario(usuario_id: str):
 """Eliminar un ejercicio (borrado físico)"""
 @usuarios_router.delete("/{usuario_id}", status_code=204, response_description="Usuario borrado permanentemente")
 def eliminar_usuario(usuario_id: str):
-    response = db.delete(collection_name, usuario_id)
-    if response:
-        return Response(status_code=204)
-    else:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    try:
+        fs_auth.delete_user(usuario_id)        
+        response = db.delete(collection_name, usuario_id)
+
+        if response:
+            return Response(status_code=204)
+        else:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")    
+    except auth.UserNotFoundError:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado en Firebase")
