@@ -1,5 +1,6 @@
 from typing import List
-from fastapi import Response, APIRouter, HTTPException
+from fastapi import Query, Response, APIRouter, HTTPException
+from google.cloud.firestore_v1.base_query import FieldFilter
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 import app.firestore_db as db
@@ -26,6 +27,26 @@ def obtener_ejercicio_por_id(ejercicio_id: str):
         return JSONResponse(content=jsonable_encoder(response), status_code=200)
     else:
         raise HTTPException(status_code=404, detail="Ejercicio no encontrado")
+
+"""Filtrar ejercicios por grupo muscular, equipamiento y/o dificultad"""
+@ejercicios_router.get("/filtrar/", response_model=List[EjercicioOut], status_code=200, response_description="Ejercicios filtrados")
+def filtrar_ejercicios(
+    dificultad: str = Query(default=None, description="Dificultad a filtrar"),
+    equipamiento: List[str] = Query(default=None, description="Equipamiento(s) a filtrar"),
+    grupo_muscular: List[str] = Query(default=None, description="Grupo(s) muscular(es) a filtrar")
+):
+    filters = [FieldFilter("estado_registro", "==", True)]
+    if grupo_muscular:
+        filters.append(FieldFilter("grupo_muscular", "array_contains", grupo_muscular))
+    if equipamiento:
+        filters.append(FieldFilter("equipamiento", "array_contains", equipamiento))
+    if dificultad:
+        filters.append(FieldFilter("dificultad", "==", dificultad))
+
+    resultados = db.read_by_filters(collection_name, filters)
+    if not resultados:
+        raise HTTPException(status_code=404, detail="No se encontraron ejercicios con los filtros dados")
+    return JSONResponse(content=jsonable_encoder(resultados), status_code=200)
 
 """Crear un nuevo ejercicio"""
 @ejercicios_router.post("/", status_code=201, response_description="Ejercicio creado")

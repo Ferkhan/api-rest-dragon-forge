@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 from google.cloud.firestore_v1.base_query import FieldFilter
 from app.init_firebase import init_firebase
 
@@ -78,6 +79,14 @@ def delete(collection_name, document_id):
         print(f"Error al eliminar el documento: {e}")
         return None
 
+"""Leer documentos de la colección especificada con filtros"""
+def read_by_filters(collection_name: str, filters: List[FieldFilter]):
+    doc_ref = db.collection(collection_name)
+    query = doc_ref
+    for f in filters:
+        query = query.where(filter=f)
+    docs = query.stream()
+    return [doc_to_dict(doc) for doc in docs]
 
 # def readByFilters():
 #     try:
