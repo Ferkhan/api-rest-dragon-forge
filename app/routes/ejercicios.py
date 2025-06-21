@@ -28,6 +28,16 @@ def obtener_ejercicio_por_id(ejercicio_id: str):
     else:
         raise HTTPException(status_code=404, detail="Ejercicio no encontrado")
 
+"""Obtener ejercicios destacados"""
+@ejercicios_router.get("/destacados/", response_model=List[EjercicioOut], status_code=200, response_description="Lista de ejercicios destacados")
+def obtener_ejercicios_destacados():
+    filters = [FieldFilter("estado_registro", "==", True), FieldFilter("destacado", "==", True)]
+    resultados = db.read_by_filters(collection_name, filters)
+    if resultados:
+        return JSONResponse(content=jsonable_encoder(resultados), status_code=200)
+    else:
+        raise HTTPException(status_code=404, detail="No se encontraron ejercicios destacados")
+
 """Filtrar ejercicios por grupo muscular, equipamiento y/o dificultad"""
 @ejercicios_router.get("/filtrar/", response_model=List[EjercicioOut], status_code=200, response_description="Ejercicios filtrados")
 def filtrar_ejercicios(
