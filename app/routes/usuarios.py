@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 from fastapi import APIRouter, HTTPException, Response
 from fastapi.responses import JSONResponse
@@ -7,7 +8,7 @@ import httpx
 
 import app.firestore_db as db
 import app.firestore_auth as fs_auth
-from app.models import UsuarioIn, UsuarioLogin, UsuarioOut, UsuarioRegistro
+from app.models import UsuarioIn, UsuarioLogin, UsuarioOut, UsuarioPatchDatosFenotipicos, UsuarioRegistro
 
 usuarios_router = APIRouter()
 
@@ -25,7 +26,7 @@ def obtener_usuarios_activos():
 """Obtener un usuario por ID"""
 @usuarios_router.get("/{usuario_id}", response_model=UsuarioOut, status_code=200, response_description="Usuario encontrado")
 def obtener_usuario_por_id(usuario_id: str):
-    response = db.readById(collection_name, usuario_id)
+    response = db.readByID(collection_name, usuario_id)
     if response:
         return JSONResponse(content=jsonable_encoder(response), status_code=200)
     else:
@@ -78,6 +79,22 @@ def actualizar_usuario(usuario_id: str, usuario: UsuarioIn):
     else:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     
+"""Actualizar los datos fenotípicos de un usuario"""
+@usuarios_router.patch("/{usuario_id}/fenotipo", status_code=204, response_description="Datos fenotípicos actualizados")
+def actualizar_datos_fenotipicos(usuario_id: str, datos: UsuarioPatchDatosFenotipicos):
+    usuario = db.readByID(collection_name, usuario_id)
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    # Actualiza los campos requeridos
+    update_data = datos.model_dump()
+    update_data["info_fenotipica_completa"] = True
+    update_data["fecha_actualizacion"] = datetime.now()
+    response = db.update(collection_name, usuario_id, update_data)
+    if response:
+        return Response(status_code=204)
+    else:
+        raise HTTPException(status_code=500, detail="Error al actualizar los datos fenotípicos")
+
 """Eliminar un usuario (marcar como inactivo)"""
 @usuarios_router.put("/{usuario_id}/eliminar", status_code=204, response_description="Usuario marcado como eliminado")
 def eliminar_usuario(usuario_id: str):
