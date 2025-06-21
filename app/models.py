@@ -114,7 +114,7 @@ class UsuarioIn(BaseModel):
     fecha_creacion: Optional[datetime] = None
     fecha_actualizacion: Optional[datetime] = None
     cuenta_verificada: Optional[bool] = False  # True si el usuario ha verificado su cuenta, False si no
-    foto_perfil_url: Optional[str] = None  # URL de la foto de perfil del usuario
+    foto_perfil_url: Optional[str] = "https://firebasestorage.googleapis.com/v0/b/dragon-forge-6b879.firebasestorage.app/o/default%2Fusuarios%2Fdefault.webp?alt=media&token=8ce8f1cb-6088-4d21-8e6c-b0c8c7c59692"  # URL de la foto de perfil del usuario
     info_fenotipica_completa: Optional[bool] = False  # True si el usuario ha completado su información fenotípica, False si no
     estado_registro: Optional[bool] = True # True si el documento está activo, False si está inactivo
 
@@ -176,6 +176,7 @@ class UsuarioRegistro(UsuarioIn):
         }
     }
 
+"""Modelo para actualizar datos fenotípicos de un usuario"""
 class UsuarioPatchDatosFenotipicos(BaseModel):
     altura: float = Field(..., gt=0)
     sexo: str = Field(..., min_length=1)
@@ -189,6 +190,32 @@ class UsuarioPatchDatosFenotipicos(BaseModel):
                 'sexo': 'masculino',
                 'fecha_nacimiento': '2005-06-16T16:17:40.768551+00:00',
                 'peso': 70.5
+            }
+        }
+    }
+
+"""Modelo para actualizar información de un usuario"""
+class UsuarioPatch(BaseModel):
+    nombre: Optional[str] = None
+    email: Optional[str] = None
+    telefono: Optional[str] = None
+    foto_perfil_url: Optional[str] = None
+    peso: Optional[float] = None # Peso en kilogramos
+    altura: Optional[float] = None # Altura en centímetros
+    sexo: Optional[str] = None  # 'masculino' o 'femenino'
+    estado_registro: Optional[bool] = None  # True si el documento está activo, False si está inactivo
+
+    model_config = {
+        'json_schema_extra': {
+            'example': {
+                'nombre': 'Juan Perez Actualizado',
+                'email': 'algo@example.com',
+                'telefono': '0987654321',
+                'foto_perfil_url': 'https://example.com/nueva_foto.webp',
+                'peso': 75.0,
+                'altura': 180.0,
+                'sexo': 'masculino',
+                'estado_registro': True
             }
         }
     }
