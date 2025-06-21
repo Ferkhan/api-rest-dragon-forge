@@ -152,6 +152,22 @@ class UsuarioRegistro(UsuarioIn):
         }
     }
 
+class UsuarioPatchDatosFenotipicos(BaseModel):
+    altura: float = Field(..., gt=0)
+    sexo: str = Field(..., min_length=1)
+    fecha_nacimiento: datetime
+    peso: float = Field(..., gt=0)
+
+    model_config = {
+        'json_schema_extra': {
+            'example': {
+                'altura': 175.5,
+                'sexo': 'masculino',
+                'fecha_nacimiento': '2005-06-16T16:17:40.768551+00:00',
+                'peso': 70.5
+            }
+        }
+    }
 
 # MODELOS CON VALIDACIONES PARA CREAR UN NUEVO ELEMENTO
 # class EjercicioCrear(BaseModel):
