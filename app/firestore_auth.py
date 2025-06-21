@@ -18,11 +18,7 @@ def create_user(email, password, display_name):
 
 def delete_user(uid):
     """Delete a user with the given UID."""
-    try:
-        auth.delete_user(uid)
-        print(f"Usuario eliminado con éxito: {uid}")
-    except Exception as e:
-        print(f"Error al eliminar usuario: {e}")
+    auth.delete_user(uid)
 
 def get_user(uid):
     """Get user information by UID."""

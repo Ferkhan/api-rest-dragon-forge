@@ -68,7 +68,7 @@ def actualizar_ejercicio(ejercicio_id: str, ejercicio: EjercicioIn):
 
 """Actualizar parcialmente un ejercicio existente"""
 @ejercicios_router.patch("/{ejercicio_id}", status_code=204, response_description="Ejercicio actualizado parcialmente")
-def patch_ejercicio(ejercicio_id: str, datos: EjercicioPatch):
+def actualizar_ejercicio_parcialmente(ejercicio_id: str, datos: EjercicioPatch):
     response = db.update(collection_name, ejercicio_id, datos.model_dump(exclude_unset=True))
     if response:
         return Response(status_code=204)

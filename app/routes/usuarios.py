@@ -81,8 +81,8 @@ def actualizar_usuario(usuario_id: str, usuario: UsuarioIn):
 
 """Actualizar parcialmente un usuario existente"""
 @usuarios_router.patch("/{usuario_id}", status_code=204, response_description="Usuario actualizado parcialmente")
-def patch_ejercicio(ejercicio_id: str, datos: UsuarioPatch):
-    response = db.update(collection_name, ejercicio_id, datos.model_dump(exclude_unset=True))
+def actualizar_ejercicio_parcialmente(usuario_id: str, datos: UsuarioPatch):
+    response = db.update(collection_name, usuario_id, datos.model_dump(exclude_unset=True))
     if response:
         return Response(status_code=204)
     else:
@@ -125,8 +125,13 @@ def recuperar_usuario(usuario_id: str):
 """Eliminar un ejercicio (borrado físico)"""
 @usuarios_router.delete("/{usuario_id}", status_code=204, response_description="Usuario borrado permanentemente")
 def eliminar_usuario(usuario_id: str):
-    response = db.delete(collection_name, usuario_id)
-    if response:
-        return Response(status_code=204)
-    else:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    try:
+        fs_auth.delete_user(usuario_id)        
+        response = db.delete(collection_name, usuario_id)
+
+        if response:
+            return Response(status_code=204)
+        else:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")    
+    except auth.UserNotFoundError:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado en Firebase")
