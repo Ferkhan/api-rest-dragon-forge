@@ -1,0 +1,1 @@
+from .ejercicio_service import obtener_ejercicios_activos as god
